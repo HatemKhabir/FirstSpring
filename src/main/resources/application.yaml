@@ -1,9 +1,10 @@
 spring:
   application:
     name: FirstSpring
+  thymeleaf:
+    cache: false
 
 first-spring:
-
 
 management:
   endpoints:
@@ -12,9 +13,9 @@ management:
         include: prometheus
   endpoint:
     health:
+      show-details: always
       probes:
         enabled: true
-      show-details: always
     metrics:
       enabled: true
     prometheus:
@@ -23,15 +24,15 @@ management:
       enabled: true
   metrics:
     tags:
-      application: FirstSpring
+      application: firstspring
       service: VS
-      region: Hungary
+      region: hungary
     enable:
       jvm: true
-    prometheus:
-      metrics:
-        export:
-          enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
 ---
 spring:
@@ -43,9 +44,9 @@ spring:
       path: /h2
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:db
-    password:
+    url: jdbc:h2:mem:testdb
     username: sa
+    password:
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -61,18 +62,26 @@ spring:
       data-locations: classpath:data.sql
       mode: always
 
+logging:
+  level:
+    org:
+      springframework: ERROR
 
 ---
 spring:
   profiles:
     active: test
 
+
 ---
 spring:
   profiles:
     active: uat
 
+
 ---
 spring:
   profiles:
     active: prod
+
+

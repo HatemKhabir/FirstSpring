@@ -16,7 +16,7 @@ public class StatService {
     public StatService(AppStatistics appStatistics){
         this.appStatistics=appStatistics;
     }
-    @Scheduled(fixedRate = 1000)
+    ///@Scheduled(fixedRate = 1000)
     private void bg(){
         log.info("BG task started");
         this.appStatistics.increment("statService");

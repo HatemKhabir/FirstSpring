@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -33,7 +34,9 @@ public class UserInfo extends AbstractEntity<Long>{
     @Column(name = "email", length = 40, unique = true, nullable = false)
     private String email;
 
-    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "roles")
-    private Set<RoleInfo> roles;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name="role_info",
+    joinColumns = @JoinColumn(name= "user_id"))
+    @Column(name = "user_role")
+    private List<String> roles;
 }

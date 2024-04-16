@@ -15,7 +15,7 @@ import org.hibernate.validator.constraints.Length;
 @Table(name = "company")
 public class Company extends Client {
 
-    @Column(name = "taxid", unique = true, nullable = false)
+    @Column(name = "tax_id", unique = true, nullable = false)
     @Length(min = 9, max = 9)
     private String taxId;
 }

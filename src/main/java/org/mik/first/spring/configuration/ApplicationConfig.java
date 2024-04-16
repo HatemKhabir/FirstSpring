@@ -16,14 +16,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class ApplicationConfig {
 
-    private final UserService userService;
-    public ApplicationConfig(UserService userService){
-        this.userService= userService;
-    }
-    @Bean
-    public UserDetailsService userDetailsService(){
-        return this.userService::loadUserByName;
-    }
+    // TODO move to another config file
+   // private final UserService userService;
+//    public ApplicationConfig(UserService userService){
+//       this.userService= userService;
+//    }
+    //@Bean
+    //public UserDetailsService userDetailsService(){
+       // return this.userService::loadUserByName;
+    //}
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -35,11 +36,11 @@ public class ApplicationConfig {
         return conf.getAuthenticationManager();
     }
 
-    @Bean
-    public AuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider dp = new DaoAuthenticationProvider();
-        dp.setUserDetailsService(userDetailsService());
-        dp.setPasswordEncoder(passwordEncoder());
-        return dp;
-    }
+//    @Bean
+//    public AuthenticationProvider authenticationProvider(){
+//        DaoAuthenticationProvider dp = new DaoAuthenticationProvider();
+//        dp.setUserDetailsService(userDetailsService());
+//        dp.setPasswordEncoder(passwordEncoder());
+//        return dp;
+//    }
 }
