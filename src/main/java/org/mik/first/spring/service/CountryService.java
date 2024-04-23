@@ -24,9 +24,7 @@ public class CountryService {
         this.objectMapper= objectMapper;
     }
 
-    private void init(){
-        log.info("Enter init");
-        List<Country> q=countryRepository.findAll();
-        q.forEach(log::info);
+    public List<Country> getAll(){
+        return this.countryRepository.findAll();
     }
 }

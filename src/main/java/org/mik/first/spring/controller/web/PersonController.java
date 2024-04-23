@@ -6,16 +6,16 @@ import org.mik.first.spring.domain.Person;
 import org.mik.first.spring.service.CountryService;
 import org.mik.first.spring.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -48,8 +48,92 @@ public class PersonController {
                     .collect(Collectors.toList());
             model.addAttribute("pageNumber", pageNumber);
         }
-        model.addAttribute("person", result);
+        model.addAttribute("persons", result);
         return "person-list";
 
     }
+
+    @GetMapping("/insert-form")
+    public String insertForm(Model model){
+        try {
+            model.addAttribute("countries", this.countryService.getAll());
+            return "person-insert";
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return "person-list";
+        }
+    }
+
+    @GetMapping("/update-form/{id}")
+    public String updateForm(@PathVariable("id") Long id, Model model){
+        AtomicReference<String> result=new AtomicReference<>();
+
+        try {
+            personService.findById(id).ifPresentOrElse(
+                    p->{
+                        model.addAttribute("person",p);
+                        model.addAttribute("countries", this.countryService.getAll());
+                        result.set("/person-update");
+                    },
+                    ()->result.set("redirect:/person-list")
+            );
+            return result.get();
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return "person-list";
+        }
+    }
+
+    @PostMapping("/update/{id}")
+    public String update(@PathVariable("id") Long id, @ModelAttribute Person person){
+        try {
+            this.personService.findById(id).ifPresentOrElse(
+                    p->{
+                        person.setId(p.getId());
+                        person.setVersion(p.getVersion());
+                        personService.save(person);
+                    },
+                    ()->log.warn(String.format("Person %s not found", person))
+
+            );
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
+        return "person-list";
+    }
+
+    @GetMapping("/insert")
+    public String insert(@ModelAttribute Person person, Model model){
+        try {
+            personService.save(person);
+        }
+        catch (DataIntegrityViolationException dive){
+            fillError(dive, "Data integrity validation error", model);
+            model.addAttribute("countries", countryService.getAll());
+            return "person-insert";
+        }
+        catch (Exception e){
+            fillError(e, "Server error", model);
+
+        }
+        return "redirect:person-list";
+    }
+
+    @PostMapping("delete/{id}")
+    public String delete(@PathVariable Long id){
+        try {
+            this.personService.delete(id);
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
+        return "person-list";
+    }
+
+    private void fillError(Exception e, String message, Model model){
+        log.error(e.getMessage());
+        model.addAttribute("errors", List.of(message));
+        model.addAttribute("countries", this.countryService.getAll());
+    }
+
+
 }

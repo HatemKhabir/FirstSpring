@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Log4j2
 public class PersonService {
@@ -20,5 +22,17 @@ public class PersonService {
 
     public Page<Person> getAll(Pageable pageable){
         return this.personRepository.findAll(pageable);
+    }
+
+    public Optional<Person> findById(Long id){
+        return this.personRepository.findById(id);
+    }
+
+    public Person save(Person p){
+        return this.personRepository.save(p);
+    }
+
+    public void delete(Long id){
+        this.personRepository.deleteById(id);
     }
 }
