@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.validator.constraints.Length;
@@ -14,6 +15,7 @@ import org.hibernate.validator.constraints.Length;
 @SuperBuilder
 @Entity
 @Table(name = "country")
+@EqualsAndHashCode(callSuper = true)
 public class Country extends AbstractEntity<Long> {
     @JsonProperty
     @Column(name = "name", unique = true, nullable = false)

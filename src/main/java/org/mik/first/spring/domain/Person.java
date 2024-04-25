@@ -1,8 +1,6 @@
 package org.mik.first.spring.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -13,6 +11,7 @@ import org.hibernate.validator.constraints.Length;
 @SuperBuilder
 @Entity
 @Table(name = "person")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Person extends Client {
 
     @Column(name = "personal_id", nullable = false, unique = true)
